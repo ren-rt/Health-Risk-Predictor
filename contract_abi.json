@@ -1,0 +1,120 @@
+[
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "patientId",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "riskLevel",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"name": "RecordStored",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "patientId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "riskLevel",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "confidence",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "aiAdvice",
+				"type": "string"
+			}
+		],
+		"name": "storePrediction",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "patientId",
+				"type": "string"
+			}
+		],
+		"name": "getPatientHistory",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "patientId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "riskLevel",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "confidence",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "aiAdvice",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct MedicalRecords.Prediction[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "patientId",
+				"type": "string"
+			}
+		],
+		"name": "getRecordCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]  
