@@ -1,0 +1,129 @@
+.history-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 56px 24px;
+}
+
+.history-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.history-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  margin: 0 0 10px;
+}
+
+.history-header p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 0;
+}
+
+.search-card {
+  display: flex;
+  gap: 10px;
+  max-width: 500px;
+  margin: 0 auto 32px;
+}
+
+.search-card input {
+  flex: 1;
+  background: var(--pink-pale);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--bg-deepest);
+}
+
+.search-card input:focus {
+  border-color: var(--primary);
+}
+
+.search-card button {
+  background: var(--berry);
+  color: var(--text-primary);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0 22px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s ease;
+}
+
+.search-card button:hover:not(:disabled) {
+  background: var(--primary);
+}
+
+.search-card button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.history-error {
+  text-align: center;
+  color: var(--accent);
+  font-size: 13px;
+}
+
+.history-empty {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 32px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
+.history-table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  overflow-x: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th {
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.history-table td {
+  padding: 14px 18px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-tertiary);
+  vertical-align: top;
+}
+
+.history-table tr:last-child td {
+  border-bottom: none;
+}
+
+.advice-cell {
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+@media (max-width: 560px) {
+  .search-card {
+    flex-direction: column;
+  }
+
+  .search-card button {
+    padding: 12px;
+  }
+}

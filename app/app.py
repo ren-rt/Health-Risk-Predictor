@@ -33,12 +33,6 @@ with open(os.path.join(MODEL_DIR, 'label_encoder.pkl'), 'rb') as f:
 def index():
     return render_template('index.html')
 
-
-@app.route('/history')
-def history_page():
-    return render_template('history.html')
-
-
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
