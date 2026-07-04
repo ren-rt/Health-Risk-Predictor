@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --bg-deepest: #0E1018;
+  --surface: #1A1E2A;
+  --border: #2A3040;
+  --muted: #4A5568;
+  --text-secondary: #8090A8;
+  --text-tertiary: #C8D4E0;
+  --text-primary: #EEF2F7;
+
+  --wine-deep: #280010;
+  --wine: #500025;
+  --berry: #8B004A;
+  --primary: #D4006A;
+  --accent: #FF3A90;
+  --pink-soft: #FFD0E8;
+  --pink-pale: #FFF0F6;
+
+  --font-display: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-deepest);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input {
+  font-family: inherit;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg-deepest);
+}
+
+/* Accessible focus state — never remove outline without replacing it */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

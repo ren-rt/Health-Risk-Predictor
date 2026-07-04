@@ -34,11 +34,6 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/history')
-def history_page():
-    return render_template('history.html')
-
-
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
@@ -69,10 +64,12 @@ def predict():
         ai_advice = get_ai_advice(vitals_dict, risk_label)
 
         # --- Blockchain logging ---
+        tx_hash = None
         try:
-            blockchain.store_prediction_on_chain(
+            receipt = blockchain.store_prediction_on_chain(
                 patient_id, str(risk_label), probability, ai_advice
             )
+            tx_hash = receipt.transactionHash.hex()
             chain_status = 'logged'
         except Exception as e:
             chain_status = f'failed ({e.__class__.__name__})'
@@ -83,6 +80,7 @@ def predict():
             'confidence': round(probability, 2),
             'ai_advice': ai_advice,
             'blockchain_status': chain_status,
+            'tx_hash': tx_hash,
             'timestamp': datetime.utcnow().isoformat(),
         })
 
