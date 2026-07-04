@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Maternal Health Risk Predictor</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; color: #1a1a1a; }
+  h1 { font-size: 1.4rem; }
+  form { display: grid; gap: 12px; margin-bottom: 24px; }
+  label { font-size: 0.85rem; font-weight: 600; }
+  input { padding: 8px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; }
+  button { padding: 10px; font-size: 1rem; border: none; border-radius: 6px; background: #2563eb; color: white; cursor: pointer; }
+  button:disabled { background: #93c5fd; cursor: not-allowed; }
+  #result { display: none; padding: 16px; border-radius: 8px; margin-top: 16px; }
+  #result.low { background: #dcfce7; border: 1px solid #16a34a; }
+  #result.mid { background: #fef9c3; border: 1px solid #ca8a04; }
+  #result.high { background: #fee2e2; border: 1px solid #dc2626; }
+  #advice { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.1); font-size: 0.92rem; }
+  #error { color: #dc2626; margin-top: 12px; display: none; }
+  .top-link { font-size: 0.85rem; }
+</style>
+</head>
+<body>
+  <p class="top-link"><a href="/history">View patient history →</a></p>
+  <h1>Maternal Health Risk Predictor</h1>
+
+  <form id="predict-form">
+    <div>
+      <label for="patient_id">Patient ID</label>
+      <input id="patient_id" required>
+    </div>
+    <div>
+      <label for="age">Age</label>
+      <input id="age" type="number" step="any" required>
+    </div>
+    <div>
+      <label for="systolic_bp">Systolic BP</label>
+      <input id="systolic_bp" type="number" step="any" required>
+    </div>
+    <div>
+      <label for="diastolic_bp">Diastolic BP</label>
+      <input id="diastolic_bp" type="number" step="any" required>
+    </div>
+    <div>
+      <label for="bs">Blood Sugar (BS)</label>
+      <input id="bs" type="number" step="any" required>
+    </div>
+    <div>
+      <label for="body_temp">Body Temperature</label>
+      <input id="body_temp" type="number" step="any" required>
+    </div>
+    <div>
+      <label for="heart_rate">Heart Rate</label>
+      <input id="heart_rate" type="number" step="any" required>
+    </div>
+    <button type="submit" id="submit-btn">Predict Risk</button>
+  </form>
+
+  <div id="error"></div>
+
+  <div id="result">
+    <strong id="risk-label"></strong> — confidence: <span id="confidence"></span>%
+    <div id="advice"></div>
+    <div id="chain-status" style="margin-top:8px; font-size:0.8rem; opacity:0.7;"></div>
+  </div>
+
+<script>
+const form = document.getElementById('predict-form');
+const resultBox = document.getElementById('result');
+const errorBox = document.getElementById('error');
+const btn = document.getElementById('submit-btn');
+
+const fieldIds = ['patient_id','age','systolic_bp','diastolic_bp','bs','body_temp','heart_rate'];
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  errorBox.style.display = 'none';
+  resultBox.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Predicting...';
+
+  const payload = {};
+  fieldIds.forEach(id => payload[id] = document.getElementById(id).value);
+
+  try {
+    const res = await fetch('/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Prediction failed');
+    }
+
+    resultBox.className = data.risk.toLowerCase().includes('high') ? 'high'
+      : data.risk.toLowerCase().includes('mid') ? 'mid' : 'low';
+    document.getElementById('risk-label').textContent =
+      `Risk level: ${data.risk.toUpperCase()}`;
+    document.getElementById('confidence').textContent = data.confidence;
+    document.getElementById('advice').textContent = data.ai_advice;
+    document.getElementById('chain-status').textContent =
+      `Blockchain: ${data.blockchain_status}`;
+    resultBox.style.display = 'block';
+  } catch (err) {
+    errorBox.textContent = err.message;
+    errorBox.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Predict Risk';
+  }
+});
+</script>
+</body>
+</html>
