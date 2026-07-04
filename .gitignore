@@ -12,9 +12,6 @@ __pycache__/
 # jupyter
 .ipynb_checkpoints/
 
-# model artifacts
-*.pkl
-
 # os
 .DS_Store
 Thumbs.db
