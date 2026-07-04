@@ -12,6 +12,14 @@ __pycache__/
 # jupyter
 .ipynb_checkpoints/
 
+# secrets / per-machine config
+.env
+
+# throwaway debug scripts
+check_tx.py
+test.json
+test_ollama.json
+
 # os
 .DS_Store
 Thumbs.db
