@@ -1,0 +1,22 @@
+# Frontend Dockerfile — runs the Vite dev server inside a container.
+# This mirrors local development (npm run dev), just made reproducible
+# for anyone running this project, without needing Node installed locally.
+
+FROM node:20-slim
+
+WORKDIR /usr/src/app
+
+# Install dependencies first (cached separately from source code,
+# same reasoning as the backend Dockerfile)
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm install
+
+# Now copy the rest of the frontend source
+COPY frontend/ .
+
+EXPOSE 5173
+
+# --host 0.0.0.0 is required for the same reason Flask needed it:
+# without it, Vite only listens inside its own container, invisible
+# from outside.
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

@@ -50,6 +50,15 @@ services:
       ollama-pull:
         condition: service_completed_successfully
 
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - app
+
 volumes:
   shared-data:
   ollama-data:
