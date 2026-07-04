@@ -1,0 +1,55 @@
+services:
+  ganache:
+    image: trufflesuite/ganache:latest
+    ports:
+      - "7545:8545"
+    command: --port 8545
+
+  deployer:
+    build: .
+    command: python blockchain/deploy.py
+    environment:
+      - GANACHE_URL=http://ganache:8545
+      - DEPLOY_OUTPUT_PATH=/shared/contract_address.txt
+    volumes:
+      - shared-data:/shared
+    depends_on:
+      - ganache
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+
+  ollama-pull:
+    image: ollama/ollama:latest
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "until ollama pull llama3.2:1b; do echo 'waiting for ollama...'; sleep 3; done"
+
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - GANACHE_URL=http://ganache:8545
+      - DEPLOY_OUTPUT_PATH=/shared/contract_address.txt
+      - OLLAMA_URL=http://ollama:11434
+      - OLLAMA_MODEL=llama3.2:1b
+    volumes:
+      - shared-data:/shared
+    depends_on:
+      deployer:
+        condition: service_completed_successfully
+      ollama-pull:
+        condition: service_completed_successfully
+
+volumes:
+  shared-data:
+  ollama-data:

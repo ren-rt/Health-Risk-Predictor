@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Patient History - Maternal Health Risk Predictor</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; color: #1a1a1a; }
+  h1 { font-size: 1.4rem; }
+  form { display: flex; gap: 8px; margin-bottom: 24px; }
+  input { flex: 1; padding: 8px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; }
+  button { padding: 8px 16px; font-size: 1rem; border: none; border-radius: 6px; background: #2563eb; color: white; cursor: pointer; }
+  button:disabled { background: #93c5fd; cursor: not-allowed; }
+  .top-link { font-size: 0.85rem; }
+  .record { padding: 14px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #ddd; }
+  .record.low { background: #dcfce7; border-color: #16a34a; }
+  .record.mid { background: #fef9c3; border-color: #ca8a04; }
+  .record.high { background: #fee2e2; border-color: #dc2626; }
+  .record .meta { font-size: 0.8rem; color: #555; margin-top: 6px; }
+  #empty, #error { color: #555; }
+  #error { color: #dc2626; }
+</style>
+</head>
+<body>
+  <p class="top-link"><a href="/">← Back to prediction form</a></p>
+  <h1>Patient History</h1>
+
+  <form id="history-form">
+    <input id="patient_id" placeholder="Enter Patient ID" required>
+    <button type="submit" id="submit-btn">Search</button>
+  </form>
+
+  <div id="error" style="display:none;"></div>
+  <div id="empty" style="display:none;">No records found for this patient.</div>
+  <div id="records"></div>
+
+  <script>
+    const form = document.getElementById('history-form');
+    const recordsEl = document.getElementById('records');
+    const errorEl = document.getElementById('error');
+    const emptyEl = document.getElementById('empty');
+    const btn = document.getElementById('submit-btn');
+
+    function riskClass(risk) {
+      const r = (risk || '').toLowerCase();
+      if (r.includes('high')) return 'high';
+      if (r.includes('mid')) return 'mid';
+      return 'low';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const patientId = document.getElementById('patient_id').value.trim();
+      if (!patientId) return;
+
+      recordsEl.innerHTML = '';
+      errorEl.style.display = 'none';
+      emptyEl.style.display = 'none';
+      btn.disabled = true;
+      btn.textContent = 'Loading...';
+
+      try {
+        const res = await fetch(`/history/${encodeURIComponent(patientId)}`);
+        const data = await res.json();
+
+        if (!res.ok) {
+          errorEl.textContent = data.error || 'Something went wrong.';
+          errorEl.style.display = 'block';
+          return;
+        }
+
+        const records = data.records || [];
+        if (records.length === 0) {
+          emptyEl.style.display = 'block';
+          return;
+        }
+
+        records.forEach(r => {
+          const div = document.createElement('div');
+          div.className = `record ${riskClass(r.riskLevel)}`;
+          const ts = r.timestamp ? new Date(r.timestamp * 1000).toLocaleString() : 'unknown time';
+          div.innerHTML = `
+            <strong>${r.riskLevel}</strong> — ${r.confidence}% confidence
+            <div class="meta">${ts}</div>
+            <div class="meta">${r.aiAdvice || ''}</div>
+          `;
+          recordsEl.appendChild(div);
+        });
+      } catch (err) {
+        errorEl.textContent = 'Could not reach the server.';
+        errorEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Search';
+      }
+    });
+  </script>
+</body>
+</html>

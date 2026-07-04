@@ -5,3 +5,8 @@ seaborn
 scikit-learn
 imbalanced-learn
 flask
+flask-cors
+web3
+requests
+python-dotenv
+py-solc-x

@@ -6,12 +6,17 @@ from dotenv import load_dotenv
 load_dotenv()
 
 GANACHE_URL = os.getenv("GANACHE_URL", "http://127.0.0.1:7545")
+DEPLOY_OUTPUT_PATH = os.getenv("DEPLOY_OUTPUT_PATH", "/shared/contract_address.txt")
+
 CONTRACT_ADDRESS_RAW = os.getenv("CONTRACT_ADDRESS")
+if not CONTRACT_ADDRESS_RAW and os.path.exists(DEPLOY_OUTPUT_PATH):
+    with open(DEPLOY_OUTPUT_PATH) as f:
+        CONTRACT_ADDRESS_RAW = f.read().strip()
 
 if not CONTRACT_ADDRESS_RAW:
     raise RuntimeError(
-        "CONTRACT_ADDRESS not set. Copy .env.example to .env and fill in "
-        "the address from your own Ganache deployment."
+        "CONTRACT_ADDRESS not set and no deployed address file found. "
+        "Either set CONTRACT_ADDRESS or run the deploy service first."
     )
 
 w3 = Web3(Web3.HTTPProvider(GANACHE_URL))
